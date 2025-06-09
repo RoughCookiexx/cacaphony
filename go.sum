@@ -1,7 +1,13 @@
-github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250603202040-2ecf04021550 h1:d6qPXAditgXEmldm5zovO0deFtFiFzpb6oJQS0ipJJI=
-github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250603202040-2ecf04021550/go.mod h1:Sb3sdIg6bA+bFV/QjBiDorA0BgicJMU/fQHVZZSvIMM=
-github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250603212420-131055419e90 h1:Pp+O2mvFvRE8YhCunfy1ZSCiRGAac257Om0FtrprIq8=
-github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250603212420-131055419e90/go.mod h1:Sb3sdIg6bA+bFV/QjBiDorA0BgicJMU/fQHVZZSvIMM=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609185212-93da5345fba4 h1:H7hDvnaiERSfr2otI22vfjrNXOsJD5PdrX5Zm+aJqUA=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609185212-93da5345fba4/go.mod h1:Sb3sdIg6bA+bFV/QjBiDorA0BgicJMU/fQHVZZSvIMM=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609194204-06360fcd9531 h1:/EBWLYp4d1a/oGa2k/Kl2Yaq09bEwVTo+ARk+zmlr8M=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609194204-06360fcd9531/go.mod h1:Sb3sdIg6bA+bFV/QjBiDorA0BgicJMU/fQHVZZSvIMM=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609194942-d2d9fdc754dd h1:51dJAS2Js9sdC6Ak1i3arCqhRHB3Bbhf3Es3gliT67E=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609194942-d2d9fdc754dd/go.mod h1:Sb3sdIg6bA+bFV/QjBiDorA0BgicJMU/fQHVZZSvIMM=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609195545-2c69874287c5 h1:apdbPVMpOmGgfM4heYin/c/oIwqo6pLZFTkr5qEkP/w=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609195545-2c69874287c5/go.mod h1:Sb3sdIg6bA+bFV/QjBiDorA0BgicJMU/fQHVZZSvIMM=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609195640-2a738f15c0ab h1:oIZDxnD8qJYIZVCLcMirsw80U+z80vHzRO8+guHKvRg=
+github.com/RoughCookiexx/gg_elevenlabs v0.0.0-20250609195640-2a738f15c0ab/go.mod h1:Sb3sdIg6bA+bFV/QjBiDorA0BgicJMU/fQHVZZSvIMM=
 github.com/RoughCookiexx/gg_sse v0.0.0-20250603190242-a2b51f479f1e h1:E3DdkqkAckhCxrg07ncfH96xRAzB12YypEjQvTZaTls=
 github.com/RoughCookiexx/gg_sse v0.0.0-20250603190242-a2b51f479f1e/go.mod h1:9R5bjI4fTuUCvYFinQY6pdERDlxqqhmWPEhx7cFcsuY=
 github.com/RoughCookiexx/twitch_chat_subscriber v0.0.0-20250602145131-e8a1cab7feb4 h1:t6XkxkL6zSVn1XCzrv1iWgAuxpnUFoS69AsQ1yJ/ook=

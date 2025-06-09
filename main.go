@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 	
@@ -14,13 +15,24 @@ import (
 
 var Users = make(map[string]string)
 
-func outburst(message string)(string) {
+func handleMessage(message string)(string) {
 	userName, err := getUserName(message)
 	if err != nil {
 		fmt.Println("Display name not found.")
 		return ""
 	}
-	message = afterLastColon(message)
+
+	if strings.Contains(message, "!voice") {	
+		message = afterLastChar(message, " ")
+		return setVoice(userName, message)
+	}
+	message = afterLastChar(message, ":")
+	
+	return outburst(message, userName)
+
+}
+
+func outburst(message string, userName string)(string) {
 	voiceId, exists := Users[userName]
 	if !exists {
 		voiceId, _ = SelectRandomVoiceID()
@@ -33,6 +45,27 @@ func outburst(message string)(string) {
 	return ""
 }
 
+func setVoice(userId string, message string) (string) {
+	elevenlabsUserId, voiceId, err := extractIDsFromURL(message)	
+	if err != nil {
+		fmt.Println("ERROR: ", err)
+		return fmt.Sprintf("Could not add voice for some reason.. i dunno..")
+	}
+
+	err = gg_eleven.AddSharedVoice(elevenlabsUserId, voiceId, userId)
+	if err != nil {
+		fmt.Println("ERROR: ", err)
+		return fmt.Sprintf("Could not add voice for some reason.. i dunno..")
+	}
+
+	existingVoiceId, exists := Users[userId]
+	Users[userId] = voiceId
+	if !exists {
+		VoiceIDs = append(VoiceIDs, existingVoiceId)
+	}	
+	return fmt.Sprintf("Set voice %s for %s", voiceId, userId)
+}
+
 func getUserName(msg string) (string, error) {
 	re := regexp.MustCompile(`display-name=([^;]+)`)
 	match := re.FindStringSubmatch(msg)
@@ -43,19 +76,48 @@ func getUserName(msg string) (string, error) {
 	}
 }
 
-func afterLastColon(s string) string {
-	idx := strings.LastIndex(s, ":")
+func afterLastChar(s string, c string) string {
+	idx := strings.LastIndex(s, c)
 	if idx == -1 || idx+1 >= len(s) {
 		return ""
 	}
 	return s[idx+1:]
 }     
 
+func extractIDsFromURL(url string) (string, string, error) {
+	success, url := trimAndValidateURL(url)
+	if !success {
+		return "", "", fmt.Errorf("the URL is malformed, you idiot")
+	}
+	parts := strings.Split(strings.Trim(url, "/"), "/")
+	if len(parts) < 2 {
+		return "", "", fmt.Errorf("the URL is malformed, you idiot")
+	}
+	
+	n := len(parts)
+	userID := parts[n-2]
+	voiceID := parts[n-1]
+	
+	return userID, voiceID, nil
+}
+
+func trimAndValidateURL(message string) (bool, string) {
+	trimmedMsg := strings.TrimSpace(message)
+	
+	u, err := url.Parse(trimmedMsg)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		fmt.Printf("Failed to get URL from: %s", message)
+		return false, trimmedMsg
+	}
+	
+	return true, trimmedMsg
+}
+
 func main() {
 	fmt.Println("Subscribing to chat messages")
 	targetURL := "http://0.0.0.0:6969/subscribe"
 	filterPattern := "PRIVMSG"
-	twitch_chat_subscriber.SendRequestWithCallbackAndRegex(targetURL, outburst, filterPattern, 6972)
+	twitch_chat_subscriber.SendRequestWithCallbackAndRegex(targetURL, handleMessage, filterPattern, 6972)
 	sse.Start()
 	http.ListenAndServe((":6972"), nil)
 }
