@@ -10,25 +10,20 @@ import (
 	
 	"github.com/RoughCookiexx/gg_elevenlabs"
 	"github.com/RoughCookiexx/gg_sse"
+	"github.com/RoughCookiexx/gg_twitch_types"
 	"github.com/RoughCookiexx/twitch_chat_subscriber"
 )
 
 var Users = make(map[string]string)
 
-func handleMessage(message string)(string) {
-	userName, err := getUserName(message)
-	if err != nil {
-		fmt.Println("Display name not found.")
-		return ""
+func handleMessage(message twitch_types.Message)(string) {
+	const command = "!voice"
+	if strings.Contains(message.Content, command) {	
+		voiceURL := strings.TrimSpace(message.Content[len(command):])
+		return setVoice(message.Tags.UserID, voiceURL)
 	}
-
-	if strings.Contains(message, "!voice") {	
-		message = afterLastChar(message, " ")
-		return setVoice(userName, message)
-	}
-	message = afterLastChar(message, ":")
 	
-	return outburst(message, userName)
+	return outburst(message.Content, message.Tags.UserID)
 
 }
 
