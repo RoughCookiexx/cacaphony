@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
+	"slices"
+	"strconv"
 	"strings"
 	
 	"github.com/RoughCookiexx/gg_elevenlabs"
@@ -35,7 +38,11 @@ func outburst(message string, userName string)(string) {
 		fmt.Printf("Assigned voice id %s to user %s", voiceId, userName)
 	}	
 
-	voiceResponse := gg_eleven.TextToSpeech(voiceId, message)
+	voiceResponse, err := gg_eleven.TextToSpeech(voiceId, message)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("OH FUCK: %w", err))
+		return "You fucked something up... or maybe I did?"
+	}
 	sse.SendBytes(voiceResponse)
 	return ""
 }
@@ -47,13 +54,15 @@ func setVoice(userId string, message string) (string) {
 		return fmt.Sprintf("Could not add voice for some reason.. i dunno..")
 	}
 
-	err = gg_eleven.AddSharedVoice(elevenlabsUserId, voiceId, userId)
-	if err != nil {
-		fmt.Println("ERROR: ", err)
-		return fmt.Sprintf("Could not add voice for some reason.. i dunno..")
+	existingVoiceId, exists := Users[userId]
+	if !slices.Contains(VoiceIDs, voiceId) && existingVoiceId != voiceId {
+		err = gg_eleven.AddSharedVoice(elevenlabsUserId, voiceId, userId)
+		if err != nil {
+			fmt.Println("ERROR: ", err)
+			return fmt.Sprintf("Could not add voice for some reason.. i dunno..")
+		}
 	}
 
-	existingVoiceId, exists := Users[userId]
 	Users[userId] = voiceId
 	if !exists {
 		VoiceIDs = append(VoiceIDs, existingVoiceId)
@@ -109,10 +118,25 @@ func trimAndValidateURL(message string) (bool, string) {
 }
 
 func main() {
+	port := 6972
+	if len(os.Args) > 1 {
+		for i, arg := range os.Args {
+			if arg == "--port" && i+1 < len(os.Args) {
+				p, err := strconv.Atoi(os.Args[i+1])
+				if err == nil {
+					port = p
+				}
+			}
+		}
+	}
 	fmt.Println("Subscribing to chat messages")
 	targetURL := "http://0.0.0.0:6969/subscribe"
 	filterPattern := "PRIVMSG"
-	twitch_chat_subscriber.SendRequestWithCallbackAndRegex(targetURL, handleMessage, filterPattern, 6972)
+	twitch_chat_subscriber.SendRequestWithCallbackAndRegex(targetURL, handleMessage, filterPattern, port)
+        http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+                w.WriteHeader(http.StatusOK)
+                fmt.Fprintf(w, "OK")
+        })
 	sse.Start()
-	http.ListenAndServe((":6972"), nil)
+	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }
